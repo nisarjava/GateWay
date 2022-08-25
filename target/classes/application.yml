@@ -1,0 +1,62 @@
+server:
+ port: 6666
+spring:
+ application:
+  name: GATEWAYEureka
+ profiles:
+  active: dev
+ config:
+  import: configserver:http://localhost:8888/configserver/
+ cloud:
+  gateway:
+   routes:
+    - id: employeeModule
+      uri: http://localhost:8080/
+      predicates:
+       - Path=/employee/**
+    - id: consumerModule
+      uri: http://localhost:8082/
+      predicates:
+       - Path=/consumer/**
+    - id: orgModule
+      uri: http://localhost:9090/
+      predicates:
+       - Path=/v1/organizations/**
+  discovery:
+   enabled: true
+
+  config:
+   enabled: true
+   eureka:
+    instance:
+     hostname: localhost
+     preferIpAddress: true
+    client:
+     registerWithEureka: true
+     fetchRegistry: true
+     serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+example.property: hello
+management:
+ endpoint:
+  metrics:
+   enabled: true
+  loggers:
+   enabled: true
+  prometheus:
+   enabled: true
+ endpoints:
+  web:
+   exposure:
+    include: '*'
+
+#server:
+# port: 8888
+#spring:
+# profiles:
+#  active: native
+# cloud:
+#  config:
+#   server:
+#    native:
+#     searchLocations: file:///Users/nisarab198/personal/PersonalOnIntelliJ/ConfigServer/src/main/resources/config/configserver
